@@ -10,11 +10,30 @@ const data = fs
   .readFileSync(inputFile[0], 'utf-8')
   .toString()
   .trim()
-  .split('\n')
-  .map(val => parseInt(val, 2));  
+  .split('\n');
 
 console.log(data);
 
-// 5 => 0101
-// 4 => 0100
-console.log(4 & 1);
+const lenth = data[0].length;
+let gamma = "";
+let epsilon = "";
+for (let i = 0; i < lenth; i++) {
+  let ones = 0
+  let zeroes = 0;
+  data.forEach(number => {
+    if (number.charAt(i) === "0") {
+      zeroes++;
+    } else {
+      ones++;
+    }
+  });
+  if (ones > zeroes) {
+    gamma = gamma.concat("1");
+    epsilon = epsilon.concat("0");
+  } else {
+    gamma = gamma.concat("0");
+    epsilon = epsilon.concat("1");
+  }
+}
+
+console.log(parseInt(epsilon, 2) * parseInt(gamma, 2));

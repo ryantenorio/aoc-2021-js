@@ -10,26 +10,60 @@ const data = fs
   .readFileSync(inputFile[0], 'utf-8')
   .toString()
   .trim()
-  .split('\n')
-  .map((command) => command.split(' '));
+  .split('\n');
 
 console.log(data);
 
-let horizontal = 0;
-let aim = 0;
-let depth = 0;
-
-data.forEach((command) => {
-  let direction = command[0];
-  let amount = parseInt(command[1], 10);
-  if (direction === 'forward') {
-    horizontal += amount;
-    depth += aim * amount;
-  } else if (direction == 'up') {
-    aim -= amount;
-  } else if (direction == 'down') {
-    aim += amount;
+const length = data[0].length;
+let possibleOxygenValues = data;
+let possibleC02Values = data;
+let oxygen = "";
+let C02 = "";
+for (let i = 0; i < length; i++) {
+  let oxygenOnes = 0
+  let oxygenZeroes = 0;
+  let C02Ones = 0;
+  let C02Zeroes = 0;
+  possibleOxygenValues.forEach(number => {
+    if (number.charAt(i) === "0") {
+      oxygenZeroes++;
+    } else {
+      oxygenOnes++;
+    }
+  });
+  possibleC02Values.forEach(number => {
+    if (number.charAt(i) === "0") {
+      C02Zeroes++;
+    } else {
+      C02Ones++;
+    }
+  });
+  if (oxygenOnes >= oxygenZeroes) {
+    possibleOxygenValues = possibleOxygenValues.filter(value => {
+      return value.charAt(i) === "1";
+    });
+  } else {
+    possibleOxygenValues = possibleOxygenValues.filter(value => {
+      return value.charAt(i) === "0";
+    });
   }
-});
+  if (C02Zeroes <= C02Ones) {
+    possibleC02Values = possibleC02Values.filter(value => {
+      return value.charAt(i) === "0";
+    });
+  } else {
+    possibleC02Values = possibleC02Values.filter(value => {
+      return value.charAt(i) === "1";
+    });
+  }
+  if (possibleOxygenValues.length === 1 && oxygen === "") {
+    oxygen = possibleOxygenValues[0];    
+  }
+  if (possibleC02Values.length === 1 && C02 === "") {
+    C02 = possibleC02Values[0];    
+  }
+} 
 
-console.log(horizontal * depth);
+console.log(parseInt(oxygen, 2));
+console.log(parseInt(C02, 2));
+console.log(parseInt(oxygen, 2) * parseInt(C02, 2));
